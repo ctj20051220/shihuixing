@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实慧星chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* 设置背景图片 */
+            background-image: url('./bjtp.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        img {
+            width: 1500px;
+            height: 150px;
+            line-height: 0;
+            text-align: center;
+        }
+        h3 {
+            font-family: 宋体;
+            color: #160606;
+        }
+        h2 img {
+            width: 45px; 
+            height: auto; 
+            background-color:#000A35
+        }
+
+    </style>
+
+</head>
+<body>
+    <img src="./shx.png" 
+    srcset="shx485.png 480w,
+    shx768.png 768w,
+    shx1200.png 1200w,
+    shx1920.png 1920w"
+    sizes="(max-width: 640px) 100vw, 
+    (max-width: 1024px) 80vw, 1200px" 
+alt="实彗星" class="responsive-image" loading="lazy" 
+decoding="async"> <!-- 异步解码 -->
+    <div class="header">
+        <h2> <img src="./logo.png" alt="" > 我是实彗星AI助教！很高兴见到你！</h2> 
+        <h3></h3>
+    </div>
+    <div class="chat-container">
+        <div class="messages" id="messages"></div>
+        <div id="loading" class="loading" style="display: none;">思考中...</div>
+        <div class="input-container">
+            <input id="chat-input" type="text" placeholder="输入消息..." />
+            <button onclick="sendMessage()">发送</button>
+            <div class="dropdown">
+                <button onclick="toggleDropdown(event)">更多</button>
+                <div class="dropdown-content" id="dropdownMenu">
+                    <div class="dropdown-item" onclick="toggleTheme()">
+                        <span>浅色/深色</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
