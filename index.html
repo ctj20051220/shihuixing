@@ -1,75 +1,283 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>实慧星chat</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* 设置背景图片 */
-            background-image: url('./bjtp.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-
-        img {
-            width: 1500px;
-            height: 150px;
-            line-height: 0;
-            text-align: center;
-        }
-        h3 {
-            font-family: 宋体;
-            color: #160606;
-        }
-        h2 img {
-            width: 45px; 
-            height: auto; 
-            background-color:#000A35
-        }
-
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>实彗星</title>
+    <link rel="stylesheet" href="./style.css">
 
 </head>
+
 <body>
-    <img src="./shx.png" 
-    srcset="shx485.png 480w,
+
+    <!-- 左侧侧边栏 -->
+
+
+
+    <!-- <img src="./shx.png" srcset="shx485.png 480w,
     shx768.png 768w,
     shx1200.png 1200w,
-    shx1920.png 1920w"
-    sizes="(max-width: 640px) 100vw, 
-    (max-width: 1024px) 80vw, 1200px" 
-alt="实彗星" class="responsive-image" loading="lazy" 
-decoding="async"> <!-- 异步解码 -->
+    shx1920.png 1920w" sizes="(max-width: 640px) 100vw, 
+    (max-width: 1024px) 80vw, 1200px" alt="实彗星" class="responsive-image" loading="lazy" decoding="async">
     <div class="header">
-        <h2> <img src="./logo.png" alt="" > 我是实彗星AI助教！很高兴见到你！</h2> 
+        <h2> <img src="./logo.png" alt=""> 我是实彗星AI助教！很高兴见到你！</h2>
         <h3></h3>
-    </div>
-    <div class="chat-container">
-        <div class="messages" id="messages"></div>
-        <div id="loading" class="loading" style="display: none;">思考中...</div>
-        <div class="input-container">
-            <input id="chat-input" type="text" placeholder="输入消息..." />
-            <button onclick="sendMessage()">发送</button>
-            <div class="dropdown">
-                <button onclick="toggleDropdown(event)">更多</button>
-                <div class="dropdown-content" id="dropdownMenu">
-                    <div class="dropdown-item" onclick="toggleTheme()">
-                        <span>浅色/深色</span>
+    </div> -->
+    <div class="ri_box">
+        <img src="./shx.png" srcset="shx485.png 480w,
+    shx768.png 768w,
+    shx1200.png 1200w,
+    shx1920.png 1920w" sizes="(max-width: 640px) 100vw, 
+    (max-width: 1024px) 80vw, 1200px" alt="实彗星" class="responsive-image" loading="lazy" decoding="async">
+
+        <div class="bott_box">
+            <div id="chatHistorySidebar">
+                <button onclick="createNewChat()">新建对话</button>
+                <div id="sidebarContent"></div>
+            </div>
+            <div class="chat-container">
+                <div class="messages" id="messages"></div>
+                <div id="loading" class="loading" style="display: none;">思考中...</div>
+                <div class="input-container">
+                    <input id="chat-input" type="text" placeholder="输入消息..." />
+                    <button onclick="sendMessage()">发送</button>
+                    <div class="dropdown">
+                        <button onclick="toggleDropdown(event)">更多</button>
+                        <div class="dropdown-content" id="dropdownMenu">
+                            <div class="dropdown-item" onclick="toggleTheme()">
+                                <span>浅色/深色</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 
 
-    <script src="script.js"></script>
+
+
+
+    <script>
+        function toggleDropdown(event) {
+            event.preventDefault();
+            document.getElementById('dropdownMenu').classList.toggle('show');
+        }
+        // 添加主题切换功能
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const chatContainer = document.querySelector('.chat-container');
+            const messages = document.querySelector('.messages');
+
+            // 同时切换容器的深色模式
+            chatContainer.classList.toggle('dark-mode');
+            messages.classList.toggle('dark-mode');
+
+            // 保存主题设置
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            localStorage.setItem('darkMode', isDarkMode);
+        }
+
+        let currentChatId = null;
+        let tempMessages = []; // 临时缓存未保存的对话
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAllChatsFromLocalStorage();
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                document.body.classList.add('dark-mode');
+                document.querySelector('.chat-container').classList.add('dark-mode');
+                document.querySelector('.messages').classList.add('dark-mode');
+            }
+        });
+
+        function formatMessage(text) {
+            return text.replace(/\n/g, '<br>');
+        }
+
+        function displayMessage(role, message) {
+            const messagesContainer = document.getElementById('messages');
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${role}`;
+
+            if (role === 'bot') {
+                const avatar = document.createElement('img');
+                avatar.src = 'cqjd.jpg';
+                avatar.alt = 'Bot';
+                messageElement.appendChild(avatar);
+            }
+
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.innerHTML = role === 'user' ? message : formatMessage(message);
+            messageElement.appendChild(messageContent);
+
+            messagesContainer.appendChild(messageElement);
+            messageElement.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function getAllChats() {
+            return JSON.parse(localStorage.getItem('allChats')) || [];
+        }
+
+        function saveAllChats(chats) {
+            console.log(chats);
+            localStorage.setItem('allChats', JSON.stringify(chats));
+        }
+
+        function createNewChat() {
+            tempMessages = [];
+            currentChatId = null;
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.innerHTML = '';
+        }
+
+        function displayMessagesInChatWindow(messages) {
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.innerHTML = '';
+
+            messages.forEach(msg => {
+                displayMessage(msg.role, msg.content);
+            });
+
+            scrollToBottom();
+        }
+
+        function loadChatHistoryIntoSidebar() {
+            const sidebar = document.getElementById('sidebarContent');
+            const chats = getAllChats();
+
+            sidebar.innerHTML = '';
+
+            chats.forEach((chat, index) => {
+                const firstMessage = chat.messages.length > 0 ? chat.messages[0].content.substring(0, 50) + "..." : "";
+                if (!firstMessage) return;
+
+                const msgElement = document.createElement('div');
+                msgElement.className = 'history-item';
+                msgElement.textContent = `${index + 1}: ${firstMessage}`;
+                msgElement.onclick = () => {
+                    currentChatId = chat.id;
+                    displayMessagesInChatWindow(chat.messages);
+                };
+                sidebar.appendChild(msgElement);
+            });
+        }
+
+
+        function sendMessage() {
+            const inputElement = document.getElementById('chat-input');
+            const userMessage = inputElement.value.trim();
+            if (!userMessage) return;
+
+            // 显示用户消息
+            displayMessage('user', userMessage);
+            inputElement.value = '';
+
+            const loadingElement = document.getElementById('loading');
+            if (loadingElement) loadingElement.style.display = 'block';
+
+            // 添加用户消息到临时缓存（仅用于前端显示）
+            tempMessages.push({ role: 'user', content: userMessage });
+
+            const apiKey = 'sk-349c90660c3c4965ad29d7e86a6712eb';
+            const endpoint = 'https://api.deepseek.com/chat/completions';
+
+            const payload = {
+                model: "deepseek-chat",
+                messages: [
+                    { role: "system", content: "You are a helpful assistant" },
+                    { role: "user", content: userMessage } // 只传入当前用户输入
+                ],
+                stream: false
+            };
+
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP 错误！状态码：${response.status}`);
+                    }
+
+                    return response.json();
+                })
+                .then(data => {
+                    let botReply = data.choices?.[0]?.message?.content || '未获取到有效回复';
+
+                    // 显示机器人回复
+                    displayMessage('bot', botReply);
+
+                    // 将机器人回复加入临时缓存（用于前端显示和后续请求）
+                    tempMessages.push({ role: 'bot', content: botReply });
+
+                    // 更新当前聊天记录到本地存储
+                    let chats = getAllChats();
+
+                    if (currentChatId) {
+                        // 更新现有的聊天记录
+                        const chatToUpdateIndex = chats.findIndex(chat => chat.id === currentChatId);
+                        if (chatToUpdateIndex !== -1) {
+                            // 合并新消息到已有的聊天记录中，而不是直接替换
+                            chats[chatToUpdateIndex].messages = [...chats[chatToUpdateIndex].messages, ...tempMessages];
+                        }
+                    } else {
+                        // 创建新的聊天记录
+                        const newChat = {
+                            id: Date.now(),
+                            messages: [...tempMessages]
+                        };
+                        chats.unshift(newChat);
+                        currentChatId = newChat.id;
+                    }
+
+                    // 保存所有聊天记录
+                    saveAllChats(chats);
+                    loadChatHistoryIntoSidebar(); // 更新侧边栏
+                })
+                .catch(error => {
+                    console.error('请求失败:', error);
+                    displayMessage('bot', '请求失败，请检查网络或 API 密钥。');
+                })
+                .finally(() => {
+                    if (loadingElement) loadingElement.style.display = 'none';
+                });
+        }
+
+
+        // 确保在页面加载时正确加载聊天记录
+        function loadAllChatsFromLocalStorage() {
+            const chats = getAllChats();
+            if (chats.length > 0) {
+                currentChatId = chats[0].id;
+                displayMessagesInChatWindow(chats.find(chat => chat.id === currentChatId).messages);
+            } else {
+                createNewChat(); // 初始化一个空白对话
+            }
+            loadChatHistoryIntoSidebar();
+        }
+
+        function scrollToBottom() {
+            const messages = document.getElementById('messages');
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        document.getElementById('chat-input').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+
+
 </body>
+
 </html>

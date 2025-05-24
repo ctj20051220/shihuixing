@@ -1,12 +1,32 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+
+html,
 body {
     font-family: 'Inter', sans-serif;
     background-color: #e9ecef;
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
     height: 100vh;
+    background-image: url(./bjtp.jpg);
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+
+}
+
+.ri_box {
+    display: block;
+    /* width: calc(100% - 220px); */
+    width: 100%;
+    /* margin-left: 220px; */
+
 }
 
 .chat-container {
@@ -18,9 +38,11 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 66vh;
     margin-top: 10px;
     backdrop-filter: blur(80px);
+    margin-bottom: 100px;
+    margin: 0px auto;
 }
 
 .messages {
@@ -32,6 +54,8 @@ body {
     border-radius: 5px;
     background-color: #f8f9fa;
     font-size: 16px;
+    height: 100%;
+    overflow-y: scroll;
 }
 
 .message {
@@ -39,7 +63,6 @@ body {
     align-items: flex-start;
     margin-bottom: 15px;
 }
-
 
 .message img {
     width: 40px;
@@ -63,9 +86,11 @@ body {
     margin: 16px 0 12px 0;
     color: #333;
 }
+
 .message.user {
     flex-direction: row-reverse;
 }
+
 .message.user img {
     margin-left: 10px;
     margin-right: 0;
@@ -98,6 +123,7 @@ body {
 }
 
 .input-container button {
+
     padding: 10px 15px;
     min-width: 60px;
     white-space: nowrap;
@@ -114,43 +140,7 @@ body {
     backdrop-filter: blur(80px);
 }
 
-/* Media query for small screens */
-@media (max-width: 600px) {
-    .chat-container {
-        height: 83vh;
-        padding: 15px;
-    }
 
-    .messages {
-        padding: 20px;
-        font-size: 15px;
-    }
-
-    .input-container {
-        gap: 8px;
-    }
-
-    .input-container input {
-        font-size: 14px;
-    }
-
-    .input-container button {
-        padding: 8px 12px;
-        font-size: 14px;
-    }
-
-    .message img {
-        width: 30px;
-        height: 30px;
-    }
-
-    .message-content {
-        font-size: 15px;
-        max-width: 100%;
-    }
-}
-
-/* 添加下拉菜单样式 */
 .dropdown {
     position: relative;
     display: inline-block;
@@ -186,7 +176,6 @@ body {
     background-color: #f8f9fa;
 }
 
-/* 深色模式样式 */
 body.dark-mode {
     background-color: #1a1a1a;
 }
@@ -233,7 +222,6 @@ body.dark-mode {
     background-color: #383838;
 }
 
-/* 段落样式 */
 .message-content p {
     margin: 10px 0;
     line-height: 1.6;
@@ -243,7 +231,6 @@ body.dark-mode {
     color: #fff;
 }
 
-/* 调整标题和段落样式 */
 .message-content .title {
     font-size: 1.3em;
     font-weight: bold;
@@ -261,31 +248,26 @@ body.dark-mode {
     color: #fff;
 }
 
-/* 粗体文本样式 */
 .message-content .bold-text {
     font-weight: bold;
     font-size: 1.1em;
     color: #333;
 }
 
-/* 段落标题样式 */
 .message-content .section-title {
     font-size: 1.1em;
     font-weight: bold;
     margin: 16px 0 8px 0;
 }
 
-/* 子段落样式 */
 .message-content .subsection {
     margin: 8px 0 8px 20px;
 }
 
-/* 正文样式 */
 .message-content .subtitle {
     font-weight: bold;
 }
 
-/* 深色模式适配 */
 .dark-mode .message-content .bold-text,
 .dark-mode .message-content .section-title,
 .dark-mode .message-content .subtitle,
@@ -299,56 +281,131 @@ body.dark-mode {
     color: #666;
     margin-bottom: 20px;
 }
+
 .header {
-    text-align: center; 
-    padding: 0; 
-    color: #ffffff; 
+    text-align: center;
+    padding: 0;
+    color: #ffffff;
     font-family: 楷体;
     font-weight: 900;
     font-size: 20px;
-    /* 新增以下代码 */
-    margin-top: -30px;  /* 负值减小间距，向上移动 */
-    position: relative; /* 确保兼容性 */
-    top: -15px;         /* 进一步微调位置 */
-}
-/* 用户消息强制右对齐 */
-.message.user {
-    justify-content: flex-end !important;
-    margin-left: auto; /* 关键：将消息推到右侧 */
+    margin-top: -30px;
+    position: relative;
+    top: -15px;
 }
 
-/* 用户消息内容右对齐 */
+.message.user {
+    justify-content: flex-end !important;
+    margin-left: auto;
+}
+
 .message.user .message-content {
     text-align: right;
     margin-right: 0;
-    margin-left: auto; /* 确保内容块右对齐 */
+    margin-left: auto;
 }
 
-/* 移除机器人消息的左侧空隙 */
-
-/* 响应式核心控制 */
 .responsive-image {
     width: 100%;
     height: auto;
-    display: block;
+    display: inline-block;
     object-fit: cover;
 }
 
-/* 高度阶梯控制 */
+
+
+/* 新增：侧边栏样式 */
+#chatHistorySidebar {
+    width: 200px;
+    background-color: #f1f1f1;
+    padding: 10px;
+    overflow-y: auto;
+    left: 50px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.history-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.history-item:hover {
+    background-color: #e9ecef;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin: 10px 0;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 200px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+.bott_box{
+    width: 1600px;
+    display: flex;
+}
+#chatHistorySidebar {
+    width: 200px;
+    background-color: #f1f1f1;
+    padding: 10px;
+    overflow-y: auto;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    left: 100px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    height: 66vh;
+    padding: 20px;
+    margin-left: 10vw;
+    border-radius: 10px;
+   
+}
+
+.history-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.history-item:hover {
+    background-color: #e9ecef;
+}
+
 @media (max-width: 640px) {
-    .header-image {
-        height: 150px;
+    * {
+        box-sizing: border-box;
     }
-}
 
-@media (min-width: 641px) and (max-width: 1024px) {
-    .header-image {
-        height: 180px;
+    #chatHistorySidebar {
+        display: none;
     }
-}
 
-@media (min-width: 1025px) {
-    .header-image {
-        height: 200px;
+    .ri_box {
+        width: 100%;
+        margin-left: 0px;
+        padding: 20px;
+    }
+
+    .input-container {
+        width: 100%;
+        display: block;
+    }
+
+    .input-container input {
+        width: 100%;
     }
 }
