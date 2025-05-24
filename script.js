@@ -78,61 +78,49 @@ function displayMessage(role, message) {
 
 function sendMessage() {
     const inputElement = document.getElementById('chat-input');
-    const message = inputElement.value;
-    if (!message.trim()) return;
+    const userMessage = inputElement.value.trim();
+    if (!userMessage) return;
 
-    displayMessage('user', message);
+    displayMessage('user', userMessage);
     inputElement.value = '';
-
-    // 显示加载动画
     const loadingElement = document.getElementById('loading');
-    if (loadingElement) {
-        loadingElement.style.display = 'block';
-    }
+    loadingElement.style.display = 'block';
 
-    const apiKey = 'sk-349c90660c3c4965ad29d7e86a6712eb';
-    const endpoint = 'https://api.deepseek.com/chat/completions';
+    tempMessages.push({ role: 'user', content: userMessage });
 
-    const payload = {
-        model: "deepseek-chat",
-        messages: [
-            { role: "system", content: "You are a helpful assistant" },
-            { role: "user", content: message }
-        ],
-        stream: false
-    };
+    // 使用CORS代理
+    const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+    const endpoint = `${corsProxy}https://api.deepseek.com/chat/completions`;
+    const apiKey = 'sk-349c90660c3c4965ad29d7e86a6712eb'; // 建议替换为环境变量或后端服务
 
     fetch(endpoint, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify(payload)
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: "deepseek-chat",
+        messages: [
+          { role: "system", content: "You are a helpful assistant" },
+          { role: "user", content: userMessage }
+        ],
+        stream: false
+      })
     })
-        .then(response => response.json())
-        .then(data => {
-            // 隐藏加载动画
-            if (loadingElement) {
-                loadingElement.style.display = 'none';
-            }
-
-            if (data.choices && data.choices.length > 0) {
-                displayMessage('bot', data.choices[0].message.content);
-            } else {
-                displayMessage('bot', '出错了，请稍后再试');
-            }
-        })
-        .catch(error => {
-            // 隐藏加载动画
-            if (loadingElement) {
-                loadingElement.style.display = 'none';
-            }
-
-            displayMessage('bot', '出错了，请稍后再试');
-            console.error('Error:', error);
-        });
-}
+    .then(res => res.json())
+    .then(data => {
+      const reply = data.choices?.[0]?.message?.content || '抱歉，暂时无法获取回复';
+      displayMessage('bot', reply);
+      tempMessages.push({ role: 'bot', content: reply });
+      // 保存聊天记录逻辑...
+    })
+    .catch(err => {
+      console.error('API请求失败:', err);
+      displayMessage('bot', '网络请求失败，请重试');
+    })
+    .finally(() => loadingElement.style.display = 'none');
+  }
 
 // 添加主题切换功能
 function toggleTheme() {
